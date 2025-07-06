@@ -3,8 +3,8 @@
         <button
             v-for="note in notes"
             :key="note.name"
-            @mousedown.prevent="play(note)"
-            @touchstart.prevent="play(note)"
+            @mousedown.prevent="play()"
+            @touchstart.prevent="play()"
             class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-2 py-1 rounded"
         >
             {{ note.name }}
@@ -28,10 +28,11 @@ const notes = [
     {name: 'C5', freq: 523.25},
 ]
 
-const play = note => {
+const play = () => {
     Object.values(bus.triggers).forEach(trigger => {
         if (typeof trigger === 'function') {
-            trigger(note.freq)
+            trigger()
+            // trigger currently takes no parameters
         }
     })
 }
