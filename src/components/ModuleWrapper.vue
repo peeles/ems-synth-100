@@ -46,6 +46,8 @@ import FilterModule from './FilterModule.vue'
 import EnvelopeModule from './EnvelopeModule.vue'
 import MasterOutput from './MasterOutput.vue'
 import LFOModule from './LFOModule.vue'
+import DelayModule from './DelayModule.vue'
+import ReverbModule from './ReverbModule.vue'
 
 import { useSynthBus } from '../stores/index'
 const bus = useSynthBus()
@@ -58,6 +60,8 @@ const componentMap = {
     Envelope: EnvelopeModule,
     Master: MasterOutput,
     LFO: LFOModule,
+    Delay: DelayModule,
+    Reverb: ReverbModule,
 }
 
 const moduleComponent = computed(() => componentMap[props.module.type]);
