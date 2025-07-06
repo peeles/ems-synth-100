@@ -12,7 +12,7 @@
             <Topbar :patchCount="modules.length" />
 
             <!-- Workspace Area -->
-            <div class="p-4 h-full overflow-auto relative">
+            <div class="p-4 h-full overflow-auto relative" ref="workspaceRef">
                 <ModuleWrapper
                     v-for="mod in modules"
                     :key="mod.id"
@@ -91,6 +91,7 @@ import VirtualKeyboard from '../components/VirtualKeyboard.vue'
 
 const {resume} = useSynthEngine()
 const bus = useSynthBus()
+const workspaceRef = ref(null)
 const moduleRefs = ref({})
 const modules = ref([]) // All spawned modules
 const connections = computed(() => bus.connections)
@@ -116,9 +117,17 @@ const resumeAudio = async () => {
 
 const getSocketPosition = el => {
     const rect = el.getBoundingClientRect()
+    const container = workspaceRef.value
+    if (container) {
+        const cRect = container.getBoundingClientRect()
+        return {
+            x: rect.left + rect.width / 2 - cRect.left + container.scrollLeft,
+            y: rect.top + rect.height / 2 - cRect.top + container.scrollTop,
+        }
+    }
     return {
-        x: rect.left + rect.width / 2 + window.scrollX,
-        y: rect.top + rect.height / 2 + window.scrollY,
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
     }
 }
 

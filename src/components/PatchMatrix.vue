@@ -1,5 +1,5 @@
 <template>
-    <div class="overflow-auto max-w-full max-h-[60vh] bg-gray-900 text-green-200 rounded-md shadow border border-gray-700 p-4">
+    <div class="overflow-auto max-w-full max-h-[60vh] bg-gray-900 text-green-200 rounded-md shadow border border-gray-700 p-4 relative z-20">
         <h2 class="text-lg font-semibold mb-4 module-title">🎛️ Patch Matrix</h2>
         <table class="table-auto border-collapse text-sm">
             <thead>
