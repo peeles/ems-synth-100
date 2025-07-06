@@ -24,9 +24,10 @@
                 />
 
                 <SynthCable
-                    v-for="(conn, i) in bus.connections"
-                    :key="i"
-                    v-bind="getCableEndpoints(conn.from, conn.to)"
+                    v-for="cable in validCables"
+                    :key="cable.key"
+                    :from="cable.from"
+                    :to="cable.to"
                 />
 
                  <PatchMatrix :inputs="bus.inputs" :outputs="bus.outputs" />
