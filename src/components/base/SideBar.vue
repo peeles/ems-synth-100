@@ -1,5 +1,7 @@
 <template>
-    <div class="w-48 bg-gray-900 border-r border-gray-700 text-green-200 flex flex-col p-4 gap-4">
+    <div
+        class="w-full sm:w-48 bg-gray-900 border-b sm:border-b-0 sm:border-r border-gray-700 text-green-200 flex flex-col p-4 gap-4"
+    >
         <h2 class="text-lg font-bold mb-2 module-title">Modules</h2>
         <button
             v-for="type in moduleTypes"
@@ -13,5 +15,13 @@
 </template>
 
 <script setup>
-const moduleTypes = ['Oscillator', 'Filter', 'Envelope', 'Master', 'LFO', 'Delay', 'Reverb']
+const moduleTypes = [
+    'Oscillator',
+    'Filter',
+    'Envelope',
+    'Master',
+    'LFO',
+    'Delay',
+    'Reverb',
+]
 </script>
