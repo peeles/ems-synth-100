@@ -24,14 +24,14 @@
                 >
                     <button
                         :class="[
-                        'w-5 h-5 rounded-full transition',
-                        isConnected(output.id, input.id)
-                             ? 'bg-green-500 hover:bg-red-500'
-                             : 'bg-gray-700 hover:bg-green-500'
+                            'w-5 h-5 rounded-full transition',
+                            isConnected(output.id, input.id)
+                                ? `${getSignalColorClass(output.id)} hover:bg-red-500`
+                                : 'bg-gray-700 hover:bg-green-500'
                         ]"
                         :title="isConnected(output.id, input.id)
-                        ? `Unpatch ${output.label} → ${input.label}`
-                        : `Patch ${output.label} → ${input.label}`"
+                            ? `Unpatch ${output.label} → ${input.label}`
+                            : `Patch ${output.label} → ${input.label}`"
                         @click="togglePatch(output.id, input.id)"
                     />
                 </td>
@@ -44,6 +44,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useSynthBus } from '../stores/index'
+import { getSignalColorClass } from '../utils/signalColors'
 
 const bus = useSynthBus()
 const inputs = computed(() => bus.inputs)
