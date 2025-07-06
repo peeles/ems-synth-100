@@ -78,8 +78,9 @@
             <PatchMatrix
                 :inputs="bus.inputs"
                 :outputs="bus.outputs"
-                class="fixed top-0 right-0 w-64 h-full border-l border-gray-700 bg-gray-900 text-green-200 overflow-auto p-4 transform transition-transform duration-300 z-20"
+                class="fixed top-0 right-0 w-64 max-w-[50vw] h-full border-l border-gray-700 bg-gray-900 text-green-200 overflow-auto p-4 transform transition-transform duration-300 z-20"
                 :class="matrixOpen ? 'translate-x-0' : 'translate-x-full'"
+                @close="matrixOpen = false"
             />
         </div>
     </div>
