@@ -7,7 +7,8 @@
         "build": "vite build",
         "preview": "vite preview",
         "format": "prettier --write .",
-        "lint": "prettier --check ."
+        "lint": "prettier --check .",
+        "test": "vitest run"
     },
     "dependencies": {
         "nanoid": "^5.1.5",
@@ -19,6 +20,7 @@
         "@tailwindcss/vite": "^4.1.8",
         "prettier": "^3.5.3",
         "tailwindcss": "^4.1.10",
-        "vite": "^6.3.5"
+        "vite": "^6.3.5",
+        "vitest": "^1.5.0"
     }
 }
