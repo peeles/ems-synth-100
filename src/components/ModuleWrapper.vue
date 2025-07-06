@@ -1,6 +1,6 @@
 <template>
     <div
-        class="absolute select-none"
+        class="absolute select-none z-10"
         :style="`left: ${position.x}px; top: ${position.y}px;`"
     >
         <div class="module-header" @mousedown.prevent="startDrag">
