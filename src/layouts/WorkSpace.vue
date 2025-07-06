@@ -69,9 +69,10 @@ import ModuleWrapper from '../components/ModuleWrapper.vue';
 import PatchMatrix from '../components/PatchMatrix.vue' // Optional if ready
 
 const { resume } = useSynthEngine();
-const bus = useSynthBus()
-const moduleRefs = ref({})
-const modules = ref([]) // All spawned modules
+const bus = useSynthBus();
+const moduleRefs = ref({});
+const modules = ref([]); // All spawned modules
+const connections = computed(() => bus.connections);
 
 const registerRef = (id, el) => {
     if (el) {
