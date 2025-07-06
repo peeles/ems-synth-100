@@ -1,14 +1,20 @@
 <template>
     <div
-        class="h-full w-full overflow-auto bg-gray-900 text-green-200 border-l border-gray-700 p-4"
+        class="relative h-full w-full overflow-auto bg-gray-900 text-green-200 border-l border-gray-700 p-4"
     >
+        <button
+            class="absolute top-1 right-1 text-gray-400 hover:text-white"
+            @click="$emit('close')"
+        >
+            x
+        </button>
         <h2 class="text-lg font-semibold mb-4 module-title">🎛️ Patch Matrix</h2>
-        <table class="table-auto border-collapse text-sm" dir="rtl">
+        <table class="table-auto border-collapse text-sm" dir="ltr">
             <thead>
             <tr>
-                <th class="px-2 py-1 text-left">Out ← In</th>
+                <th class="px-2 py-1 text-left">Out → In</th>
                 <th
-                    v-for="input in reversedInputs"
+                    v-for="input in inputs"
                     :key="input.id"
                     class="px-2 py-1 text-center"
                 >
@@ -17,10 +23,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="output in outputs" :key="output.id">
+              <tr v-for="output in outputs" :key="output.id">
                 <td class="font-bold px-2 py-1">{{ output.label }}</td>
                 <td
-                    v-for="input in reversedInputs"
+                    v-for="input in inputs"
                     :key="input.id"
                     class="text-center px-1 py-1"
                 >
@@ -50,7 +56,6 @@ import { getSignalColorClass } from '../utils/signalColors'
 
 const bus = useSynthBus()
 const inputs = computed(() => bus.inputs)
-const reversedInputs = computed(() => [...inputs.value].reverse())
 const outputs = computed(() => bus.outputs)
 const connections = computed(() => bus.connections)
 
