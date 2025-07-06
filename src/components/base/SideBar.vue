@@ -13,5 +13,5 @@
 </template>
 
 <script setup>
-const moduleTypes = ['Oscillator', 'Filter', 'Envelope', 'Master', 'LFO']
+const moduleTypes = ['Oscillator', 'Filter', 'Envelope', 'Master', 'LFO', 'Delay', 'Reverb']
 </script>
