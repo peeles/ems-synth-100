@@ -31,6 +31,7 @@
                 />
 
                 <PatchMatrix :inputs="bus.inputs" :outputs="bus.outputs" />
+
                 <VirtualKeyboard />
 
                 <!-- Save/Load Controls -->
@@ -93,8 +94,10 @@ const bus = useSynthBus()
 const moduleRefs = ref({})
 const modules = ref([]) // All spawned modules
 const connections = computed(() => bus.connections)
+
 const patchName = ref('default')
 const patchList = ref(bus.listPatches())
+
 
 const registerRef = (id, el) => {
     if (el) {
