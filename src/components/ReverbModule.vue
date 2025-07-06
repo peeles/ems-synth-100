@@ -62,6 +62,7 @@ onMounted(() => {
 onUnmounted(() => {
     inputGain.disconnect()
     convolver.disconnect()
+    convolver.buffer = null
     dryGain.disconnect()
     wetGain.disconnect()
     outputGain.disconnect()

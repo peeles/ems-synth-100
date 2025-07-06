@@ -101,5 +101,6 @@ onMounted(() => {
 onUnmounted(() => {
     stop()
     gainNode.disconnect()
+    buffer = null
 })
 </script>
