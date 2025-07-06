@@ -45,6 +45,7 @@ import OscillatorModule from './OscillatorModule.vue'
 import FilterModule from './FilterModule.vue'
 import EnvelopeModule from './EnvelopeModule.vue'
 import MasterOutput from './MasterOutput.vue'
+import LFOModule from './LFOModule.vue'
 
 import { useSynthBus } from '../stores/index'
 const bus = useSynthBus()
@@ -56,6 +57,7 @@ const componentMap = {
     Filter: FilterModule,
     Envelope: EnvelopeModule,
     Master: MasterOutput,
+    LFO: LFOModule,
 }
 
 const moduleComponent = computed(() => componentMap[props.module.type]);
