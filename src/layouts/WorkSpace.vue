@@ -30,10 +30,21 @@
                     :to="cable.to"
                 />
 
-                 <PatchMatrix :inputs="bus.inputs" :outputs="bus.outputs" />
+                <PatchMatrix :inputs="bus.inputs" :outputs="bus.outputs" />
 
                 <!-- Save/Load Controls -->
                 <div class="absolute top-4 right-4 flex gap-2 z-20">
+                    <input
+                        v-model="patchName"
+                        list="patch-list"
+                        placeholder="patch name"
+                        class="bg-gray-700 border border-gray-500 text-sm px-2 py-1 rounded shadow text-white"
+                    />
+                    <datalist id="patch-list">
+                        <option v-for="n in patchList" :key="n" :value="n">
+                            {{ n }}
+                        </option>
+                    </datalist>
                     <button
                         @click="save"
                         class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-3 py-1 rounded shadow"
@@ -45,6 +56,12 @@
                         class="bg-orange-600 hover:bg-orange-500 text-white text-sm px-3 py-1 rounded shadow"
                     >
                         Load Patch
+                    </button>
+                    <button
+                        @click="share"
+                        class="bg-green-600 hover:bg-green-500 text-white text-sm px-3 py-1 rounded shadow"
+                    >
+                        Share Patch
                     </button>
                     <button
                         @click="clear"
@@ -59,21 +76,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed} from 'vue'
-import { nanoid } from 'nanoid'
-import { useSynthEngine } from '../composable/useSynthEngine'
-import { useSynthBus } from '../stores/index'
+import {ref, onMounted, computed} from 'vue'
+import {nanoid} from 'nanoid'
+import {useSynthEngine} from '../composable/useSynthEngine'
+import {useSynthBus} from '../stores/index'
 import SynthCable from '../components/SynthCable.vue'
-import Sidebar from '../components/base/SideBar.vue';
-import Topbar from '../components/base/TopBar.vue';
-import ModuleWrapper from '../components/ModuleWrapper.vue';
+import Sidebar from '../components/base/SideBar.vue'
+import Topbar from '../components/base/TopBar.vue'
+import ModuleWrapper from '../components/ModuleWrapper.vue'
 import PatchMatrix from '../components/PatchMatrix.vue' // Optional if ready
 
-const { resume } = useSynthEngine();
-const bus = useSynthBus();
-const moduleRefs = ref({});
-const modules = ref([]); // All spawned modules
-const connections = computed(() => bus.connections);
+const {resume} = useSynthEngine()
+const bus = useSynthBus()
+const moduleRefs = ref({})
+const modules = ref([]) // All spawned modules
+const connections = computed(() => bus.connections)
+const patchName = ref('default')
+const patchList = ref(bus.listPatches())
 
 const registerRef = (id, el) => {
     if (el) {
@@ -90,7 +109,7 @@ const resumeAudio = async () => {
     }
 }
 
-const getSocketPosition = (el) => {
+const getSocketPosition = el => {
     const rect = el.getBoundingClientRect()
     return {
         x: rect.left + rect.width / 2 + window.scrollX,
@@ -113,15 +132,17 @@ const getCableEndpoints = (fromId, toId) => {
 
 const validCables = computed(() => {
     return connections.value
-        .map((conn) => {
+        .map(conn => {
             const endpoints = getCableEndpoints(conn.from, conn.to)
-            return endpoints ? { ...endpoints, key: `${conn.from}->${conn.to}` } : null
+            return endpoints
+                ? {...endpoints, key: `${conn.from}->${conn.to}`}
+                : null
         })
         .filter(Boolean)
 })
 
 // Spawn a module and track its type + position
-const spawnModule = (type, position = { x: 100, y: 100 }) => {
+const spawnModule = (type, position = {x: 100, y: 100}) => {
     modules.value.push({
         id: `${type.toLowerCase()}-${nanoid(6)}`,
         type,
@@ -130,31 +151,34 @@ const spawnModule = (type, position = { x: 100, y: 100 }) => {
 }
 
 // Register module audio nodes into SynthBus
-const registerModule = ({ id, input, output, trigger }) => {
-    bus.register({ id, input, output, trigger })
+const registerModule = ({id, input, output, trigger}) => {
+    bus.register({id, input, output, trigger})
 }
 
-const removeModule = (id) => {
-    modules.value = modules.value.filter(m => m.id !== id);
-    bus.clearModule(id);
+const removeModule = id => {
+    modules.value = modules.value.filter(m => m.id !== id)
+    bus.clearModule(id)
 }
 
 // Save patch using SynthBus store
 const save = () => {
     bus.savePatch(
-        modules.value.map((mod) => ({
+        modules.value.map(mod => ({
             id: mod.id,
             type: mod.type,
             position: mod.position,
-        }))
+        })),
+        patchName.value || 'default'
     )
-    alert('Patch saved.')
+    alert(`Patch "${patchName.value}" saved.`)
+    patchList.value = bus.listPatches()
 }
 
 // Load patch using SynthBus store
 const load = () => {
-    const loadedModules = bus.loadPatch()
-    if (!loadedModules.length) return alert('No saved patch found.')
+    const loadedModules = bus.loadPatch(patchName.value || 'default')
+    if (!loadedModules.length)
+        return alert(`No patch named "${patchName.value}" found.`)
 
     // Reset current bus state and modules before rehydrating
     bus.clear()
@@ -166,17 +190,30 @@ const load = () => {
     }
 }
 
+const share = () => {
+    const json = bus.exportPatch(patchName.value || 'default')
+    const blob = new Blob([json], {type: 'application/json'})
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${patchName.value || 'patch'}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+}
+
 // Clear everything (state + bus)
 const clear = () => {
     if (confirm('Clear all modules and connections?')) {
         modules.value = []
         bus.clear()
         bus.clearPatch()
+        patchList.value = bus.listPatches()
     }
 }
 
 // Optional: auto-load on app start
 onMounted(() => {
+    patchList.value = bus.listPatches()
     load()
 })
 </script>
