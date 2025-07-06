@@ -31,6 +31,7 @@
                 />
 
                 <PatchMatrix :inputs="bus.inputs" :outputs="bus.outputs" />
+                <VirtualKeyboard />
 
                 <!-- Save/Load Controls -->
                 <div class="absolute top-4 right-4 flex gap-2 z-20">
@@ -85,6 +86,7 @@ import Sidebar from '../components/base/SideBar.vue'
 import Topbar from '../components/base/TopBar.vue'
 import ModuleWrapper from '../components/ModuleWrapper.vue'
 import PatchMatrix from '../components/PatchMatrix.vue' // Optional if ready
+import VirtualKeyboard from '../components/VirtualKeyboard.vue'
 
 const {resume} = useSynthEngine()
 const bus = useSynthBus()
