@@ -12,7 +12,10 @@
 
         <div class="flex flex-1 overflow-hidden">
             <!-- Workspace Area -->
-            <div class="flex-1 p-4 h-full overflow-auto relative" ref="workspaceRef">
+            <div
+                class="flex-1 p-4 h-full overflow-auto relative"
+                ref="workspaceRef"
+            >
                 <ModuleWrapper
                     v-for="mod in modules"
                     :key="mod.id"
@@ -212,6 +215,7 @@ const registerModule = ({id, input, output, trigger}) => {
 
 const removeModule = id => {
     modules.value = modules.value.filter(m => m.id !== id)
+    delete moduleRefs.value[id]
     bus.clearModule(id)
 }
 
@@ -238,6 +242,7 @@ const load = () => {
     // Reset current bus state and modules before rehydrating
     bus.clear()
     modules.value = []
+    moduleRefs.value = {}
 
     // Rehydrate the modules (let ModuleWrapper re-register them)
     for (const mod of loadedModules) {
@@ -260,6 +265,7 @@ const share = () => {
 const clear = () => {
     if (confirm('Clear all modules and connections?')) {
         modules.value = []
+        moduleRefs.value = {}
         bus.clear()
         bus.clearPatch()
         patchList.value = bus.listPatches()
