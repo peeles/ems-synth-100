@@ -1,6 +1,6 @@
 <template>
-    <div class="w-48 bg-gray-900 border-r border-gray-700 flex flex-col p-4 gap-4">
-        <h2 class="text-lg font-bold mb-2">Modules</h2>
+    <div class="w-48 bg-gray-900 border-r border-gray-700 text-green-200 flex flex-col p-4 gap-4">
+        <h2 class="text-lg font-bold mb-2 module-title">Modules</h2>
         <button
             v-for="type in moduleTypes"
             :key="type"

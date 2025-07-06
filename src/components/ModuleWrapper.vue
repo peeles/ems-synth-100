@@ -3,11 +3,8 @@
         class="absolute select-none"
         :style="`left: ${position.x}px; top: ${position.y}px;`"
     >
-          <div
-            class="cursor-move flex items-center justify-between bg-gray-700 px-2 py-1 rounded-t"
-            @mousedown.prevent="startDrag"
-        >
-            <span class="text-xs font-semibold">{{ module.type }}</span>
+        <div class="module-header" @mousedown.prevent="startDrag">
+            <span class="module-title">{{ module.type }}</span>
 
             <button
                 @click="remove"
@@ -18,7 +15,7 @@
             </button>
         </div>
 
-        <div class="relative rounded-b bg-gray-800 p-2 shadow-xl">
+        <div class="module-container">
             <div
                 ref="outputRef"
                 class="absolute top-1 left-[-10px] w-2 h-2 rounded-full bg-green-500 z-10"
