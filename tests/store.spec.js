@@ -45,4 +45,15 @@ describe('synth bus store', () => {
     const another = useSynthBus()
     expect(another.loadPatch()).toEqual(mods)
   })
+
+  it('handles multiple named patches', () => {
+    const a = [{ id: 'a', type: 'osc', position: { x: 0, y: 0 } }]
+    const b = [{ id: 'b', type: 'filter', position: { x: 1, y: 1 } }]
+    bus.savePatch(a, 'first')
+    bus.savePatch(b, 'second')
+    expect(bus.listPatches().sort()).toEqual(['first', 'second'])
+    expect(bus.loadPatch('second')).toEqual(b)
+    bus.removePatch('first')
+    expect(bus.listPatches()).toEqual(['second'])
+  })
 })

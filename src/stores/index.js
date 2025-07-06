@@ -6,6 +6,7 @@ export const useSynthBus = defineStore('synthBus', () => {
   const outputs = ref([])
   const triggers = ref({})
   const savedModules = ref([])
+  const patchLibrary = ref({})
   const connections = ref([]);
 
   const addConnection = (conn) => {
@@ -46,23 +47,38 @@ export const useSynthBus = defineStore('synthBus', () => {
 
   }
 
-  const savePatch = (modules) => {
-    savedModules.value = JSON.parse(JSON.stringify(modules))
-    localStorage.setItem('synth-patch', JSON.stringify(savedModules.value))
+  const savePatch = (modules, name = 'default') => {
+    const library = JSON.parse(localStorage.getItem('synth-patches') || '{}')
+    library[name] = JSON.parse(JSON.stringify(modules))
+    patchLibrary.value = library
+    savedModules.value = library[name]
+    localStorage.setItem('synth-patches', JSON.stringify(library))
   }
 
-  const loadPatch = () => {
-    const stored = localStorage.getItem('synth-patch')
-    if (stored) {
-      savedModules.value = JSON.parse(stored)
-      return savedModules.value
-    }
-    return []
+  const loadPatch = (name = 'default') => {
+    const library = JSON.parse(localStorage.getItem('synth-patches') || '{}')
+    patchLibrary.value = library
+    savedModules.value = library[name] || []
+    return savedModules.value
+  }
+
+  const listPatches = () => {
+    const library = JSON.parse(localStorage.getItem('synth-patches') || '{}')
+    patchLibrary.value = library
+    return Object.keys(library)
+  }
+
+  const removePatch = (name) => {
+    const library = JSON.parse(localStorage.getItem('synth-patches') || '{}')
+    delete library[name]
+    patchLibrary.value = library
+    localStorage.setItem('synth-patches', JSON.stringify(library))
   }
 
   const clearPatch = () => {
     savedModules.value = []
-    localStorage.removeItem('synth-patch')
+    patchLibrary.value = {}
+    localStorage.removeItem('synth-patches')
   }
 
   return {
@@ -74,8 +90,11 @@ export const useSynthBus = defineStore('synthBus', () => {
     clearModule,
     connections,
     savedModules,
+    patchLibrary,
     savePatch,
     loadPatch,
+    listPatches,
+    removePatch,
     clearPatch,
     addConnection,
     removeConnection,
