@@ -69,7 +69,8 @@ const inputRef = ref(null)
 
 defineExpose({outputRef, inputRef})
 const handleReady = data => {
-    bus.register(data)
+    // Use wrapper id for consistent referencing across UI and store
+    bus.register({ ...data, id: props.module.id })
 }
 
 const remove = () => {
