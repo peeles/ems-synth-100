@@ -139,23 +139,22 @@ const removeModule = (id) => {
     bus.clearModule(id);
 }
 
-// Save patch to localStorage
+// Save patch using SynthBus store
 const save = () => {
-    const serialized = modules.value.map((mod) => ({
-        id: mod.id,
-        type: mod.type,
-        position: mod.position,
-    }))
-    localStorage.setItem('synth-patch', JSON.stringify(serialized))
+    bus.savePatch(
+        modules.value.map((mod) => ({
+            id: mod.id,
+            type: mod.type,
+            position: mod.position,
+        }))
+    )
     alert('Patch saved.')
 }
 
-// Load patch from localStorage
+// Load patch using SynthBus store
 const load = () => {
-    const patch = localStorage.getItem('synth-patch')
-    if (!patch) return alert('No saved patch found.')
-
-    const loadedModules = JSON.parse(patch)
+    const loadedModules = bus.loadPatch()
+    if (!loadedModules.length) return alert('No saved patch found.')
 
     // Reset current bus state and modules before rehydrating
     bus.clear()
@@ -172,7 +171,7 @@ const clear = () => {
     if (confirm('Clear all modules and connections?')) {
         modules.value = []
         bus.clear()
-        localStorage.removeItem('synth-patch')
+        bus.clearPatch()
     }
 }
 
