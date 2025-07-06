@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useSynthEngine } from '../composable/useSynthEngine'
 
 const props = defineProps({
@@ -61,6 +61,12 @@ onMounted(() => {
         input: null,
         id: `lfo-${props.label}`
     })
+})
+
+onUnmounted(() => {
+    oscRef.value?.stop()
+    oscRef.value?.disconnect()
+    gainRef.value?.disconnect()
 })
 
 const updateFrequency = () => {
