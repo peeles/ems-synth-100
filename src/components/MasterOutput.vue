@@ -149,6 +149,9 @@ onMounted(() => {
 
 onUnmounted(() => {
     if (animationFrame) cancelAnimationFrame(animationFrame)
+    inputGain.disconnect()
+    masterGain.disconnect()
+    analyser.disconnect()
 })
 
 const getMeterColor = (value) => {
