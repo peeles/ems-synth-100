@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useSynthEngine } from '../composable/useSynthEngine'
 
 const emit = defineEmits(['ready'])
@@ -54,6 +54,15 @@ onMounted(() => {
         input: inputGain,
         output: outputGain,
     })
+})
+
+onUnmounted(() => {
+    inputGain.disconnect()
+    delay.disconnect()
+    feedbackGain.disconnect()
+    dryGain.disconnect()
+    wetGain.disconnect()
+    outputGain.disconnect()
 })
 
 const updateTime = () => delay.delayTime.setValueAtTime(time.value, context.currentTime)

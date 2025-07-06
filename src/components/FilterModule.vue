@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useSynthEngine } from '../composable/useSynthEngine'
 
 const emit = defineEmits(['ready'])
@@ -55,5 +55,11 @@ onMounted(() => {
         input: inputGain,
         output: outputGain
     })
+})
+
+onUnmounted(() => {
+    inputGain.disconnect()
+    filter.disconnect()
+    outputGain.disconnect()
 })
 </script>
