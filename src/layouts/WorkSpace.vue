@@ -155,6 +155,9 @@ const load = () => {
     if (!patch) return alert('No saved patch found.')
 
     const loadedModules = JSON.parse(patch)
+
+    // Reset current bus state and modules before rehydrating
+    bus.clear()
     modules.value = []
 
     // Rehydrate the modules (let ModuleWrapper re-register them)
