@@ -30,7 +30,9 @@
                     :to="cable.to"
                 />
 
-                 <PatchMatrix :inputs="bus.inputs" :outputs="bus.outputs" />
+                <PatchMatrix :inputs="bus.inputs" :outputs="bus.outputs" />
+
+                <VirtualKeyboard />
 
                 <!-- Save/Load Controls -->
                 <div class="absolute top-4 right-4 flex gap-2 z-20">
@@ -59,21 +61,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed} from 'vue'
-import { nanoid } from 'nanoid'
-import { useSynthEngine } from '../composable/useSynthEngine'
-import { useSynthBus } from '../stores/index'
+import {ref, onMounted, computed} from 'vue'
+import {nanoid} from 'nanoid'
+import {useSynthEngine} from '../composable/useSynthEngine'
+import {useSynthBus} from '../stores/index'
 import SynthCable from '../components/SynthCable.vue'
-import Sidebar from '../components/base/SideBar.vue';
-import Topbar from '../components/base/TopBar.vue';
-import ModuleWrapper from '../components/ModuleWrapper.vue';
+import Sidebar from '../components/base/SideBar.vue'
+import Topbar from '../components/base/TopBar.vue'
+import ModuleWrapper from '../components/ModuleWrapper.vue'
 import PatchMatrix from '../components/PatchMatrix.vue' // Optional if ready
+import VirtualKeyboard from '../components/VirtualKeyboard.vue'
 
-const { resume } = useSynthEngine();
-const bus = useSynthBus();
-const moduleRefs = ref({});
-const modules = ref([]); // All spawned modules
-const connections = computed(() => bus.connections);
+const {resume} = useSynthEngine()
+const bus = useSynthBus()
+const moduleRefs = ref({})
+const modules = ref([]) // All spawned modules
+const connections = computed(() => bus.connections)
 
 const registerRef = (id, el) => {
     if (el) {
@@ -90,7 +93,7 @@ const resumeAudio = async () => {
     }
 }
 
-const getSocketPosition = (el) => {
+const getSocketPosition = el => {
     const rect = el.getBoundingClientRect()
     return {
         x: rect.left + rect.width / 2 + window.scrollX,
@@ -113,15 +116,17 @@ const getCableEndpoints = (fromId, toId) => {
 
 const validCables = computed(() => {
     return connections.value
-        .map((conn) => {
+        .map(conn => {
             const endpoints = getCableEndpoints(conn.from, conn.to)
-            return endpoints ? { ...endpoints, key: `${conn.from}->${conn.to}` } : null
+            return endpoints
+                ? {...endpoints, key: `${conn.from}->${conn.to}`}
+                : null
         })
         .filter(Boolean)
 })
 
 // Spawn a module and track its type + position
-const spawnModule = (type, position = { x: 100, y: 100 }) => {
+const spawnModule = (type, position = {x: 100, y: 100}) => {
     modules.value.push({
         id: `${type.toLowerCase()}-${nanoid(6)}`,
         type,
@@ -130,19 +135,19 @@ const spawnModule = (type, position = { x: 100, y: 100 }) => {
 }
 
 // Register module audio nodes into SynthBus
-const registerModule = ({ id, input, output, trigger }) => {
-    bus.register({ id, input, output, trigger })
+const registerModule = ({id, input, output, trigger}) => {
+    bus.register({id, input, output, trigger})
 }
 
-const removeModule = (id) => {
-    modules.value = modules.value.filter(m => m.id !== id);
-    bus.clearModule(id);
+const removeModule = id => {
+    modules.value = modules.value.filter(m => m.id !== id)
+    bus.clearModule(id)
 }
 
 // Save patch using SynthBus store
 const save = () => {
     bus.savePatch(
-        modules.value.map((mod) => ({
+        modules.value.map(mod => ({
             id: mod.id,
             type: mod.type,
             position: mod.position,
