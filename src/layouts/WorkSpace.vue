@@ -4,7 +4,11 @@
         @click="resumeAudio"
         @touchstart="resumeAudio"
     >
-        <Topbar :patchCount="modules.length" @spawn="spawnModule" />
+        <Topbar
+            :patchCount="modules.length"
+            @spawn="spawnModule"
+            @toggleMatrix="matrixOpen = !matrixOpen"
+        />
 
         <div class="flex flex-1 overflow-hidden">
             <!-- Workspace Area -->
@@ -71,14 +75,15 @@
             <PatchMatrix
                 :inputs="bus.inputs"
                 :outputs="bus.outputs"
-                class="w-64 border-l border-gray-700 bg-gray-900 text-green-200 overflow-auto p-4"
+                class="fixed top-0 right-0 w-64 h-full border-l border-gray-700 bg-gray-900 text-green-200 overflow-auto p-4 transform transition-transform duration-300 z-20"
+                :class="matrixOpen ? 'translate-x-0' : 'translate-x-full'"
             />
         </div>
     </div>
 </template>
 
 <script setup>
-import {ref, onMounted, computed} from 'vue'
+import {ref, onMounted, onUnmounted, computed} from 'vue'
 import {nanoid} from 'nanoid'
 import {useSynthEngine} from '../composable/useSynthEngine'
 import {useSynthBus} from '../stores/index'
@@ -94,9 +99,20 @@ const workspaceRef = ref(null)
 const moduleRefs = ref({})
 const modules = ref([]) // All spawned modules
 const connections = computed(() => bus.connections)
+const rafTick = ref(0)
+const matrixOpen = ref(false)
 
 const patchName = ref('default')
 const patchList = ref(bus.listPatches())
+
+const startRaf = () => {
+    const step = () => {
+        rafTick.value++
+        rafId = requestAnimationFrame(step)
+    }
+    step()
+}
+let rafId
 
 const registerRef = (id, el) => {
     if (el) {
@@ -143,6 +159,8 @@ const getCableEndpoints = (fromId, toId) => {
 }
 
 const validCables = computed(() => {
+    rafTick.value
+    modules.value
     return connections.value
         .map(conn => {
             const endpoints = getCableEndpoints(conn.from, conn.to)
@@ -252,5 +270,10 @@ const clear = () => {
 onMounted(() => {
     patchList.value = bus.listPatches()
     load()
+    startRaf()
+})
+
+onUnmounted(() => {
+    cancelAnimationFrame(rafId)
 })
 </script>
