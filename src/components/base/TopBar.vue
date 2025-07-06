@@ -3,7 +3,9 @@
         class="h-12 bg-gray-800 border-b border-gray-700 px-4 flex items-center justify-between text-green-200 relative"
     >
         <div class="flex items-center gap-2">
-            <h1 class="text-lg font-bold tracking-wide module-title">EMS Synth 100</h1>
+            <h1 class="text-lg font-bold tracking-wide module-title">
+                EMS Synth 100
+            </h1>
 
             <div class="relative">
                 <button
@@ -29,7 +31,9 @@
         </div>
 
         <div class="flex items-center gap-2">
-            <div class="text-sm text-green-400">Patch count: {{ patchCount }}</div>
+            <div class="text-sm text-green-400">
+                Patch count: {{ patchCount }}
+            </div>
             <button
                 @click="emit('toggleMatrix')"
                 class="bg-gray-700 hover:bg-gray-600 text-white text-sm px-2 py-1 rounded"
@@ -62,6 +66,7 @@ const moduleTypes = [
     'LFO',
     'Delay',
     'Reverb',
+    'Sampler',
 ]
 
 const spawn = type => {
