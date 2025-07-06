@@ -1,18 +1,14 @@
 <template>
     <div
-        class="flex h-screen bg-gray-950 text-white"
+        class="flex flex-col h-screen bg-gray-950 text-white"
         @click="resumeAudio"
         @touchstart="resumeAudio"
     >
-        <!-- Sidebar -->
-        <Sidebar @spawn="spawnModule" />
+        <Topbar :patchCount="modules.length" @spawn="spawnModule" />
 
-        <!-- Main View -->
-        <div class="flex-1 relative overflow-hidden">
-            <Topbar :patchCount="modules.length" />
-
+        <div class="flex flex-1 overflow-hidden">
             <!-- Workspace Area -->
-            <div class="p-4 h-full overflow-auto relative" ref="workspaceRef">
+            <div class="flex-1 p-4 h-full overflow-auto relative" ref="workspaceRef">
                 <ModuleWrapper
                     v-for="mod in modules"
                     :key="mod.id"
@@ -29,8 +25,6 @@
                     :from="cable.from"
                     :to="cable.to"
                 />
-
-                <PatchMatrix :inputs="bus.inputs" :outputs="bus.outputs" />
 
                 <VirtualKeyboard />
 
@@ -73,6 +67,12 @@
                     </button>
                 </div>
             </div>
+
+            <PatchMatrix
+                :inputs="bus.inputs"
+                :outputs="bus.outputs"
+                class="w-64 border-l border-gray-700 bg-gray-900 text-green-200 overflow-auto p-4"
+            />
         </div>
     </div>
 </template>
@@ -83,7 +83,6 @@ import {nanoid} from 'nanoid'
 import {useSynthEngine} from '../composable/useSynthEngine'
 import {useSynthBus} from '../stores/index'
 import SynthCable from '../components/SynthCable.vue'
-import Sidebar from '../components/base/SideBar.vue'
 import Topbar from '../components/base/TopBar.vue'
 import ModuleWrapper from '../components/ModuleWrapper.vue'
 import PatchMatrix from '../components/PatchMatrix.vue' // Optional if ready
@@ -98,7 +97,6 @@ const connections = computed(() => bus.connections)
 
 const patchName = ref('default')
 const patchList = ref(bus.listPatches())
-
 
 const registerRef = (id, el) => {
     if (el) {
@@ -155,13 +153,38 @@ const validCables = computed(() => {
         .filter(Boolean)
 })
 
-// Spawn a module and track its type + position
+// basic size approximation for module bounds
+const MODULE_WIDTH = 380
+const MODULE_HEIGHT = 220
+const MODULE_GAP = 20
+
+// Check if two positions overlap based on approximate size
+const overlaps = (posA, posB) => {
+    return (
+        posA.x < posB.x + MODULE_WIDTH &&
+        posA.x + MODULE_WIDTH > posB.x &&
+        posA.y < posB.y + MODULE_HEIGHT &&
+        posA.y + MODULE_HEIGHT > posB.y
+    )
+}
+
+// Spawn a module and track its type + position, avoiding overlaps
 const spawnModule = (type, position = {x: 100, y: 100}) => {
-    modules.value.push({
-        id: `${type.toLowerCase()}-${nanoid(6)}`,
-        type,
-        position,
-    })
+    const id = `${type.toLowerCase()}-${nanoid(6)}`
+    const workspace = workspaceRef.value
+    const maxWidth = workspace?.clientWidth || 0
+    let pos = {...position}
+
+    // shift position until it no longer collides with existing modules
+    while (modules.value.some(m => overlaps(pos, m.position))) {
+        pos.x += MODULE_WIDTH + MODULE_GAP
+        if (maxWidth && pos.x + MODULE_WIDTH > maxWidth) {
+            pos.x = MODULE_GAP
+            pos.y += MODULE_HEIGHT + MODULE_GAP
+        }
+    }
+
+    modules.value.push({id, type, position: pos})
 }
 
 // Register module audio nodes into SynthBus
