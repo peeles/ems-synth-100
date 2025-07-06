@@ -1,0 +1,22 @@
+{
+  "name": "webex-meeting-grid",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "nanoid": "^5.1.5",
+    "pinia": "^3.0.3",
+    "vue": "^3.5.17"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "@tailwindcss/vite": "^4.1.8",
+    "prettier": "^3.5.3",
+    "tailwindcss": "^4.1.10",
+    "vite": "^6.3.5"
+  }
+}
