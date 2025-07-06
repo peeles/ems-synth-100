@@ -60,6 +60,11 @@ export const useSynthBus = defineStore('synthBus', () => {
     return []
   }
 
+  const clearPatch = () => {
+    savedModules.value = []
+    localStorage.removeItem('synth-patch')
+  }
+
   return {
     inputs,
     outputs,
@@ -71,6 +76,7 @@ export const useSynthBus = defineStore('synthBus', () => {
     savedModules,
     savePatch,
     loadPatch,
+    clearPatch,
     addConnection,
     removeConnection,
   }
