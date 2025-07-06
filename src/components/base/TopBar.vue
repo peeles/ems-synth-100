@@ -28,14 +28,22 @@
             </div>
         </div>
 
-        <div class="text-sm text-green-400">Patch count: {{ patchCount }}</div>
+        <div class="flex items-center gap-2">
+            <div class="text-sm text-green-400">Patch count: {{ patchCount }}</div>
+            <button
+                @click="emit('toggleMatrix')"
+                class="bg-gray-700 hover:bg-gray-600 text-white text-sm px-2 py-1 rounded"
+            >
+                Matrix
+            </button>
+        </div>
     </div>
 </template>
 
 <script setup>
 import {ref} from 'vue'
 
-const emit = defineEmits(['spawn'])
+const emit = defineEmits(['spawn', 'toggleMatrix'])
 
 defineProps({
     patchCount: {
