@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue'
+import { computed, ref, onUnmounted } from 'vue'
 import OscillatorModule from './OscillatorModule.vue'
 import FilterModule from './FilterModule.vue'
 import EnvelopeModule from './EnvelopeModule.vue'
@@ -95,4 +95,6 @@ const stopDrag = () => {
     document.removeEventListener('mousemove', drag)
     document.removeEventListener('mouseup', stopDrag)
 }
+
+onUnmounted(stopDrag)
 </script>
