@@ -45,11 +45,12 @@ import MasterOutput from './MasterOutput.vue'
 import LFOModule from './LFOModule.vue'
 import DelayModule from './DelayModule.vue'
 import ReverbModule from './ReverbModule.vue'
+import SamplerModule from './SamplerModule.vue'
 
-import { useSynthBus } from '../stores/index'
+import {useSynthBus} from '../stores/index'
 const bus = useSynthBus()
 
-const props = defineProps({ module: Object, position: Object })
+const props = defineProps({module: Object, position: Object})
 const emit = defineEmits(['remove'])
 const componentMap = {
     Oscillator: OscillatorModule,
@@ -59,14 +60,15 @@ const componentMap = {
     LFO: LFOModule,
     Delay: DelayModule,
     Reverb: ReverbModule,
+    Sampler: SamplerModule,
 }
 
-const moduleComponent = computed(() => componentMap[props.module.type]);
+const moduleComponent = computed(() => componentMap[props.module.type])
 const outputRef = ref(null)
 const inputRef = ref(null)
 
-defineExpose({ outputRef, inputRef })
-const handleReady = (data) => {
+defineExpose({outputRef, inputRef})
+const handleReady = data => {
     bus.register(data)
 }
 
@@ -77,14 +79,14 @@ const remove = () => {
 let offsetX = 0
 let offsetY = 0
 
-const startDrag = (e) => {
+const startDrag = e => {
     offsetX = e.clientX - props.position.x
     offsetY = e.clientY - props.position.y
     document.addEventListener('mousemove', drag)
     document.addEventListener('mouseup', stopDrag)
 }
 
-const drag = (e) => {
+const drag = e => {
     props.module.position.x = e.clientX - offsetX
     props.module.position.y = e.clientY - offsetY
 }
